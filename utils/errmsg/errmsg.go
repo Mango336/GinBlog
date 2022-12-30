@@ -30,6 +30,8 @@ var errMp = map[int]string{
 	ERROR_TOKEN_RUNTIME:      "TOKEN超时...",
 	ERROR_TOKEN_WRONG:        "TOKEN错误...",
 	ERROR_TOKEN_TYPE_WRONG:   "TOKEN格式错误...",
+
+	ERROR_CATEGORYNAME_USED: "该分类已存在...",
 }
 
 func GetErrMsg(code int) string {

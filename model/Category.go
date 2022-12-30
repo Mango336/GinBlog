@@ -17,8 +17,8 @@ type Category struct {
 func CheckCategory(name string) int {
 	var cate Category
 	db.Select("id").Where("name = ?", name).First(&cate)
-	if cate.ID > 0 { // id > 0  该用户已经存在 放回存在的user数据
-		return errmsg.ERROR_USERNAME_USED
+	if cate.ID > 0 { // id > 0  该分类已经存在 放回存在cate数据
+		return errmsg.ERROR_CATEGORYNAME_USED
 	}
 	return errmsg.SUCCESS
 }
