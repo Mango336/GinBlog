@@ -4,13 +4,12 @@ package v1
 import (
 	"GinBlog/model"
 	"GinBlog/utils/errmsg"
-	// "fmt"
+
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
-
 
 // 添加分类
 func AddCategory(c *gin.Context) {
@@ -68,11 +67,11 @@ func EditCategory(c *gin.Context) {
 	code, cate := model.GetCateInfo(id) // 根据id获取分类的所有信息
 	var message string
 	if code == errmsg.SUCCESS {
-		// 1. 用户名没修改 ==> 可以直接编辑用户信息
+		// 1. 分类名没修改 ==> 可以直接编辑分类信息
 		if data.Name == cate.Name {
 			model.EditCategory(id, &data)
 			message = errmsg.GetErrMsg(code)
-		} else { // 2. 用户名修改了 ==> 考虑修改后的名字是否重复
+		} else { // 2. 分类名修改了 ==> 考虑修改后的名字是否重复
 			code2 := model.CheckCategory(data.Name)
 			if code2 == errmsg.SUCCESS { // 不重复
 				model.EditCategory(id, &data)
@@ -88,7 +87,7 @@ func EditCategory(c *gin.Context) {
 	})
 }
 
-// 删除用户
+// 删除分类
 func DeleteCategory(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	code := model.DeleteCategory(id)
@@ -97,4 +96,3 @@ func DeleteCategory(c *gin.Context) {
 		"message": errmsg.GetErrMsg(code),
 	})
 }
-

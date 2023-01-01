@@ -1,6 +1,7 @@
 package main
 
 import (
+	"GinBlog/model"
 	"GinBlog/routes"
 	"fmt"
 )
@@ -13,5 +14,7 @@ func main() {
 	// 	c.HTML(http.StatusOK, "index.tmpl", nil)
 	// })
 	// r.Run(":8888")
+
+	model.InitDb()
 	routes.InitRouter()
 }

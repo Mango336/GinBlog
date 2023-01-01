@@ -5,11 +5,10 @@ import (
 	"GinBlog/utils/errmsg"
 
 	"gorm.io/gorm"
-	// "fmt"
 )
 
 type Category struct {
-	ID   uint   `gorm: "primary_key; auto_increment" json: "id"`
+	Id   uint   `gorm: "primary_key; auto_increment" json: "id"`
 	Name string `gorm: "type:varchar(20);not null" json: "name"`
 }
 
@@ -17,7 +16,7 @@ type Category struct {
 func CheckCategory(name string) int {
 	var cate Category
 	db.Select("id").Where("name = ?", name).First(&cate)
-	if cate.ID > 0 { // id > 0  该分类已经存在 放回存在cate数据
+	if cate.Id > 0 { // id > 0  该分类已经存在 放回存在cate数据
 		return errmsg.ERROR_CATEGORYNAME_USED
 	}
 	return errmsg.SUCCESS
@@ -27,7 +26,7 @@ func CheckCategory(name string) int {
 func GetCateInfo(id int) (int, Category) {
 	var cate Category
 	db.First(&cate, id)
-	if cate.ID <= 0 {
+	if cate.Id <= 0 {
 		return errmsg.ERROR, cate
 	}
 	return errmsg.SUCCESS, cate
@@ -35,7 +34,7 @@ func GetCateInfo(id int) (int, Category) {
 
 // 创建分类
 func CreateCategory(data *Category) int {
-	err := db.Create(&data).Error // 创建用户
+	err := db.Create(&data).Error // 创建分类
 	if err != nil {
 		return errmsg.ERROR // 500 创建失败返回ERROR代码
 	}
@@ -79,3 +78,5 @@ func EditCategory(id int, data *Category) int {
 	}
 	return errmsg.SUCCESS
 }
+
+// todo 查询分类下所有文章
