@@ -2,12 +2,14 @@ package utils
 
 import (
 	"fmt"
+
 	ini "gopkg.in/ini.v1"
 )
 
 var (
 	AppMode  string
 	HttpPort string
+	JwtKey   string
 
 	Db         string
 	DbHost     string
@@ -21,8 +23,8 @@ func init() {
 	// 读取init文件
 	file, err := ini.Load("./config/config.ini")
 	if err != nil {
-		fmt.Printf("Error: %v\n", err.Error())		
-		panic("Config path is error...")		
+		fmt.Printf("Error: %v\n", err.Error())
+		panic("Config path is error...")
 	}
 	LoadServer(file)
 	LoadDataBase(file)
@@ -32,6 +34,7 @@ func init() {
 func LoadServer(file *ini.File) {
 	AppMode = file.Section("Server").Key("AppMode").MustString("debug")
 	HttpPort = file.Section("Server").Key("HttpPort").MustString(":8888")
+	JwtKey = file.Section("Server").Key("JwtKey").MustString("89js82js72")
 }
 
 // 加载DataBase配置

@@ -4,7 +4,7 @@ package v1
 import (
 	"GinBlog/model"
 	"GinBlog/utils/errmsg"
-	// "fmt"
+
 	"net/http"
 	"strconv"
 
@@ -19,7 +19,10 @@ func UserExist(c *gin.Context) {
 // 添加用户
 func AddUser(c *gin.Context) {
 	var data model.User
-	_ = c.ShouldBind(&data)
+	c.ShouldBindJSON(&data)
+	// fmt.Println("====Start user====")
+	// fmt.Println(data.Password, reflect.TypeOf(data.Password))
+	// fmt.Println("====End user====")
 	code := model.CheckUser(data.Username)
 	// 用户名未使用
 	if code == errmsg.SUCCESS {

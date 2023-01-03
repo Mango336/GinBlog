@@ -13,6 +13,7 @@ const (
 	ERROR_TOKEN_RUNTIME      = 1005
 	ERROR_TOKEN_WRONG        = 1006
 	ERROR_TOKEN_TYPE_WRONG   = 1007
+	ERROR_USER_HAVE_NO_RIGHT = 1008
 
 	// code = 2000...  文章模块错误
 	ERROR_ARTICLE_NOT_EXIST = 2001
@@ -32,6 +33,7 @@ var errMp = map[int]string{
 	ERROR_TOKEN_RUNTIME:      "TOKEN超时...",
 	ERROR_TOKEN_WRONG:        "TOKEN错误...",
 	ERROR_TOKEN_TYPE_WRONG:   "TOKEN格式错误...",
+	ERROR_USER_HAVE_NO_RIGHT: "该用户无此权限...",
 
 	ERROR_ARTICLE_NOT_EXIST: "该文章不存在...",
 

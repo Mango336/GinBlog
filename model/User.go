@@ -7,7 +7,6 @@ package model
 import (
 	"GinBlog/utils/errmsg"
 	"encoding/base64"
-	"fmt"
 	"log"
 
 	"golang.org/x/crypto/bcrypt"
@@ -57,7 +56,6 @@ func GetUsers(pageSize, pageNum int) []User {
 	var users []User
 	err := db.Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&users).Error
 	// 上面一行写法==sql语句: select * from users offset (pageNum-1)*pageSize limit pageSize;
-	fmt.Printf("%v\n", users)
 	// 查找错误 && 没有找到
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil
@@ -86,6 +84,11 @@ func ScryptPwd(password string) string {
 	return pwd
 }
 
+// 密码验证--scrypt包
+func IsScryptPwd(dbPwd, userPwd string) bool {
+	return ScryptPwd(userPwd) == dbPwd
+}
+
 // 密码加密--bcrypt包
 func BcryptPwd(password string) string {
 	// GenerateFromPassword中携带两个参数--要哈希的密码、创建哈希密码的哈希成本 Default为10
@@ -94,15 +97,20 @@ func BcryptPwd(password string) string {
 		log.Fatal(err)
 	}
 	pwd := base64.StdEncoding.EncodeToString(hashPwd)
-
-	// 获取该哈希密码的哈希成本cost
-	// costPwd, err := bcrypt.Cost(hashPwd)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// log.Printf("The brcypt cost: %v\n", costPwd)
-
 	return pwd
+}
+
+// 密码验证--bcrypt包
+func IsBcryptPwd(dbPwd, userPwd string) bool {
+	// 直接将用户输入的密码（pwd）加密后与数据库中存储的密码（dbPwd）对比 会有错误
+	// 需要将dbPwd base64解码 得到hashPwd
+	// 再使用CompareHashAndPassword()函数来验证密码是否正确
+	hashPwd, _ := base64.StdEncoding.DecodeString(dbPwd)           // 将数据库中存储的加密密码解码
+	err := bcrypt.CompareHashAndPassword(hashPwd, []byte(userPwd)) // 哈希密码与用户输入密码对比
+	if err != nil {                                                // 密码错误
+		return false
+	}
+	return true
 }
 
 // 删除用户
@@ -126,6 +134,26 @@ func EditUser(id int, data *User) int {
 	err := db.Model(&user).Where("id = ?", id).Updates(mp).Error
 	if err != nil {
 		return errmsg.ERROR
+	}
+	return errmsg.SUCCESS
+}
+
+// 用户登录验证
+func CheckLogin(username, password string) int {
+	var user User
+	db.Where("username = ?", username).First(&user)
+	if user.ID <= 0 {
+		return errmsg.ERROR_USERNAME_NOT_EXIST
+	}
+	if !IsBcryptPwd(user.Password, password) {
+		return errmsg.ERROR_PASSWORD_WORNG
+	}
+	// 使用Scrypt加密时
+	// if !IsScryptPwd(user.Password, password) {
+	// 	return errmsg.ERROR_PASSWORD_WORNG
+	// }
+	if user.Role != 0 {
+		return errmsg.ERROR_USER_HAVE_NO_RIGHT
 	}
 	return errmsg.SUCCESS
 }
