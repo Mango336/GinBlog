@@ -17,6 +17,11 @@ var (
 	DbUser     string
 	DbPassWord string
 	DbName     string
+
+	AccessKey   string
+	SecretKey   string
+	Bucket      string
+	QiniuServer string
 )
 
 func init() {
@@ -28,6 +33,7 @@ func init() {
 	}
 	LoadServer(file)
 	LoadDataBase(file)
+	LoadQiniuCloud(file)
 }
 
 // 加载Server配置
@@ -45,4 +51,12 @@ func LoadDataBase(file *ini.File) {
 	DbUser = file.Section("database").Key("DbUser").MustString("root")
 	DbPassWord = file.Section("database").Key("DbPassWord").MustString("dase618")
 	DbName = file.Section("database").Key("DbName").MustString("root")
+}
+
+// 加载七牛云存储空间
+func LoadQiniuCloud(file *ini.File) {
+	AccessKey = file.Section("qiniuCloud").Key("AccessKey").String()
+	SecretKey = file.Section("qiniuCloud").Key("SecretKey").String()
+	Bucket = file.Section("qiniuCloud").Key("Bucket").String()
+	QiniuServer = file.Section("qiniuCloud").Key("QiniuServer").String()
 }
