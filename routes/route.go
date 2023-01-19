@@ -11,6 +11,8 @@ import (
 func InitRouter() {
 	gin.SetMode(utils.AppMode)
 	r := gin.Default()
+	r.Use(middleware.Logger(), gin.Recovery())
+
 	// 需要token验证的分组
 	rpToken := r.Group("api/v1")
 	rpToken.Use(middleware.JwtTokenHandler())
@@ -26,6 +28,9 @@ func InitRouter() {
 		rpToken.POST("art/add", v1.AddArticle)      // 添加文章
 		rpToken.PUT("art/:id", v1.EditArticle)      // 编辑文章信息
 		rpToken.DELETE("art/:id", v1.DeleteArticle) // 删除文章
+
+		// 上传模块
+		rpToken.POST("upload", v1.UploadFile)
 	}
 
 	rp := r.Group("api/v1") // GET方法 不需要token验证
